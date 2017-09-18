@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sr.batis.mapper.UserMapper">
+    <!-- dynamic sql -->
+    <sql id="whereClause">
+            <if test="username!= null and username!=''">
+                AND username LIKE '%${username}%'
+            </if>
+            <if test="sex != null and sex !=''">
+                AND sex = #{sex}
+            </if>
+    </sql>
+    
+    
+    
+    
+    <!-- 根据用户ID查询用户信息 -->
+    <select id="findUserById" parameterType="int" resultType="user">
+		SELECT
+		* FROM USER WHERE id =#{id}
+	</select>
+
+    <!-- 根据用户ID查询用户信息 入参 vo -->
+    <select id="findUserByVo" parameterType="user" resultType="user">
+        SELECT
+        * FROM USER WHERE id =#{id}
+    </select>
+
+    <!-- 根据用户ID查询用户信息 入参 vo -->
+    <select id="findUserByMap" parameterType="hashmap" resultType="user">
+        SELECT
+        * FROM USER WHERE id =#{id}
+    </select>
+    <!-- 添加用户 -->
+    <insert id="insertUser" parameterType="com.sr.batis.po.User">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+
+        INSERT INTO USER
+        (username,birthday,sex,address)
+        VALUES(#{username},#{birthday},#{sex},#{address})
+    </insert>
+    
+    <select id="findUserNameById" parameterType="int" resultType="string">
+        SELECT
+        username FROM USER WHERE id =#{id}
+    </select>
+
+    <select id="findUserByNameAndSex" parameterType="user" resultType="user">
+        SELECT
+        * FROM USER
+        <where>
+            <include refid="whereClause"></include>
+        </where>
+    </select>
+</mapper>
+
